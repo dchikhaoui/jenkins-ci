@@ -48,10 +48,10 @@ def call(config = [:]) {
 
                 stage ("Deploy") {
                     container ('kubectl') {
-                        dir ("deployment") {
+                        dir ("deployment/base") {
                             sh """
                                 kustomize edit set imagetag $imageTag;
-                                kustomize build overlays/test | kubectl apply --record -f  -
+                                kustomize build ../overlays/test | kubectl apply --record -f  -
                             """
                         }
                     }
