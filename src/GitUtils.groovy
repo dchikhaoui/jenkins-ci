@@ -10,4 +10,12 @@ def withGitCredentials(Closure closure) {
     }
 }
 
+def publishLibraryRelease(releaseTag) {
+    push(["HEAD:master", "refs/tags/$releaseTag"])
+}
+
+def publishHotfix(releaseTag) {
+    push(["HEAD~1:${getCurrentBranch()}", "refs/tags/$releaseTag"])
+}
+
 return this
