@@ -2,6 +2,8 @@
 
 def call(config = [:]) {
 
+    config = config as JavaLibraryPipelineConfig
+
     podTemplate(
             label: 'slave-pod',
             inheritFrom: 'default',
@@ -17,8 +19,6 @@ def call(config = [:]) {
         node('slave-pod') {
             GitUtils gitUtils = new GitUtils()
             try {
-                config = config as JavaLibraryPipelineConfig
-
                 checkout scm
 
                 gitUtils.withGitCredentials {
