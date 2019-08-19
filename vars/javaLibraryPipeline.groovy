@@ -4,17 +4,33 @@ def call(config = [:]) {
 
     config = config as JavaLibraryPipelineConfig
 
-    podTemplate(
-            inheritFrom: 'default',
-            containers: [
-                    containerTemplate(name: 'maven', image: config.mavenImage, ttyEnabled: true, command: 'cat'),
-                    containerTemplate(name: 'docker', image: config.dockerImage, ttyEnabled: true, command: 'cat')
-            ],
-            volumes: [
-                    hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock'),
-                    hostPathVolume(hostPath: '/root/.m2', mountPath: '/root/.m2')
-            ]
-    ) {
+    podTemplate(yaml: """
+apiVersion: v1
+kind: Pod
+spec:
+  containers:
+  - name: docker
+    image: $config.dockerImage
+    command: ['cat']
+    tty: true
+    volumeMounts:
+    - name: dockersock
+      mountPath: /var/run/docker.sock
+  - name: maven
+    image: $config.mavenImage
+    command: ['cat']
+    tty: true
+    volumeMounts:
+    - name: m2
+      mountPath: /root/.m2
+  volumes:
+  - name: dockersock
+    hostPath:
+      path: /var/run/docker.sock
+  - name: m2
+    hostPath:
+      path: /root/.m2
+""") {
         node(POD_LABEL) {
             GitUtils gitUtils = new GitUtils()
             try {
