@@ -5,7 +5,6 @@ def call(config = [:]) {
     config = config as JavaLibraryPipelineConfig
 
     podTemplate(
-            label: 'slave-pod',
             inheritFrom: 'default',
             containers: [
                     containerTemplate(name: 'maven', image: config.mavenImage, ttyEnabled: true, command: 'cat'),
@@ -16,7 +15,7 @@ def call(config = [:]) {
                     hostPathVolume(hostPath: '/root/.m2', mountPath: '/root/.m2')
             ]
     ) {
-        node('slave-pod') {
+        node(POD_LABEL) {
             GitUtils gitUtils = new GitUtils()
             try {
                 checkout scm
