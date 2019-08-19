@@ -5,14 +5,11 @@ def call(config = [:]) {
     config = config as JavaLibraryPipelineConfig
 
     podTemplate(
-            label: 'docker',
             inheritFrom: 'default',
             containers: [ containerTemplate(name: 'docker', image: config.dockerImage, ttyEnabled: true, command: 'cat') ],
             volumes: [ hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock') ]
     ) {
         podTemplate(
-                label: 'maven',
-                inheritFrom: 'default',
                 containers: [ containerTemplate(name: 'maven', image: config.mavenImage, ttyEnabled: true, command: 'cat') ],
                 volumes: [ hostPathVolume(hostPath: '/root/.m2', mountPath: '/root/.m2') ]
         ) {
