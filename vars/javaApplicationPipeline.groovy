@@ -1,15 +1,15 @@
 #!/usr/bin/groovy
 
 def call(config = [:]) {
-    config = config as JavaBuildConfig
+    config = config as JavaApplicationPipelineConfig
 
     podTemplate(
             label: 'slave-pod',
             inheritFrom: 'default',
             containers: [
                     containerTemplate(name: 'maven', image: config.mavenImage, ttyEnabled: true, command: 'cat'),
-                    containerTemplate(name: 'docker', image: 'docker:18.02', ttyEnabled: true, command: 'cat'),
-                    containerTemplate(name: 'kubectl', image: 'traherom/kustomize-docker:1.0.5', ttyEnabled: true, command: 'cat')
+                    containerTemplate(name: 'docker', image: config.dockerImage, ttyEnabled: true, command: 'cat'),
+                    containerTemplate(name: 'kubectl', image: config.kubectlImage, ttyEnabled: true, command: 'cat')
             ],
             volumes: [
                     hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock'),
