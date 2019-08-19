@@ -13,7 +13,7 @@ def call(config = [:]) {
                 containers: [ containerTemplate(name: 'maven', image: config.mavenImage, ttyEnabled: true, command: 'cat') ],
                 volumes: [ hostPathVolume(hostPath: '/root/.m2', mountPath: '/root/.m2') ]
         ) {
-            node(POD_LABEL) {
+            node('docker') {
                 GitUtils gitUtils = new GitUtils()
                 try {
                     checkout scm
